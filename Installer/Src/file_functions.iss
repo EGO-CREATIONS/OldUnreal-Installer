@@ -10,7 +10,7 @@
 
 [Code]
 var
-  PatchFileName : String;
+  UTPatchFile, UPatchFile, UTPatchURL, UPatchURL: String;
 
 // returns Json value from key
 function GetJsonValue(Output: TJsonParserOutput; Parent: TJsonObject; Key: TJsonString; var Value: TJsonValue): Boolean;
@@ -86,13 +86,24 @@ begin
   end;
 end;
 
-function GetFileName(Param: String):String;
+// UT
+function GetUTPatchFile(Param: String):String;
 begin
-  //PatchFileName := ExtractFileName(GetReleaseFile(Param));
-  Result:= ExtractFileName(GetReleaseFile(Param));
+  Result:= UTPatchFile;
 end;
 
-// function GetPatchFilename(Param: String):String;
-// begin
-//   Result:= PatchFileName;
-// end;
+function GetUTPatchURL(Param: String):String;
+begin
+  Result:= UTPatchURL;
+end;
+
+// Unreal
+function GetUPatchFile(Param: String):String;
+begin
+  Result:= UPatchFile;
+end;
+
+function GetUPatchURL(Param: String):String;
+begin
+  Result:= UPatchURL;
+end;

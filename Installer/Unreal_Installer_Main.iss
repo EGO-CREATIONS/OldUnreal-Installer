@@ -32,15 +32,12 @@
 
 #define DownloadUTPatchURL  "https://api.github.com/repos/OldUnreal/UnrealTournamentPatches/releases/latest"
 #define DownloadUTGameURL   "https://archive.org/download/ut-goty"
-;#define DownloadUTGameURL   "http://vmdevsrv/files"
 #define UTGameISO           "UT_GOTY_CD1.iso"
 #define UTGameISOtwo        "UT_GOTY_CD2.iso"
 
 #define DownloadUPatchURL   "https://api.github.com/repos/OldUnreal/Unreal-testing/releases/tags/v227k"
 #define DownloadUnrealURL   "https://archive.org/download/gt-unreal-1998"
 #define DownloadUGoldURL    "https://archive.org/download/totallyunreal"
-;#define DownloadUnrealURL   "http://vmdevsrv/files"
-;#define DownloadUGoldURL    "http://vmdevsrv/files"
 #define UnrealISO           "Unreal.iso"
 #define UGoldISO            "UNREAL_GOLD.ISO"
 
@@ -78,7 +75,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
 ; -= Unreal Tournament =-
-Source: "{tmp}\{code:GetFileName|{#DownloadUTPatchURL}}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: UnrealTournament; Check: DwinsHs_Check(ExpandConstant('{tmp}\{code:GetFileName|{#DownloadUTPatchURL}}'), ExpandConstant('{code:GetReleaseFile|{#DownloadUTPatchURL}}'), '{#AppId}', 'get', 0, 0)
+Source: "{tmp}\{code:GetUTPatchFile}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: UnrealTournament; Check: DwinsHs_Check(ExpandConstant('{tmp}\{code:GetUTPatchFile}'), ExpandConstant('{code:GetUTPatchURL}'), '{#AppId}', 'get', 0, 0)
 Source: "{tmp}\{#UTGameISO}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: UnrealTournament; Check: DwinsHs_Check(ExpandConstant('{tmp}\{#UTGameISO}'), '{#DownloadUTGameURL}/{#UTGameISO}', '{#AppId}', 'get', 0, 0)
 Source: "{tmp}\{#UTGameISOtwo}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: UnrealTournament; Check: DwinsHs_Check(ExpandConstant('{tmp}\{#UTGameISOtwo}'), '{#DownloadUTGameURL}/{#UTGameISOtwo}', '{#AppId}', 'get', 0, 0)
 
@@ -87,20 +84,23 @@ Source: "{tmp}\{#UTGameISOtwo}"; DestDir: "{tmp}"; Flags: external deleteafterin
 ;Source: "{tmp}\{#UnrealISO}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: Unreal; Check: DwinsHs_Check(ExpandConstant('{tmp}\{#UnrealISO}'), '{#DownloadUnrealURL}/{#UnrealISO}', '{#AppId}', 'get', 0, 0)
 
 ; -= Unreal Gold =-
-Source: "{tmp}\{code:GetFileName|{#DownloadUPatchURL}}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: Unreal; Check: DwinsHs_Check(ExpandConstant('{tmp}\{code:GetFileName|{#DownloadUPatchURL}}'), ExpandConstant('{code:GetReleaseFile|{#DownloadUPatchURL}}'), '{#AppId}', 'get', 0, 0)
+Source: "{tmp}\{code:GetUPatchFile}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: Unreal; Check: DwinsHs_Check(ExpandConstant('{tmp}\{code:GetUPatchFile}'), ExpandConstant('{code:GetUPatchURL}'), '{#AppId}', 'get', 0, 0)
 Source: "{tmp}\{#UGoldISO}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: Unreal; Check: DwinsHs_Check(ExpandConstant('{tmp}\{#UGoldISO}'), '{#DownloadUGoldURL}/{#UGoldISO}', '{#AppId}', 'get', 0, 0)
 
-;
+; additional temporary used files
 Source: ".\Files\7z.exe"; DestDir: "{tmp}"; Flags: deleteafterinstall
 Source: ".\Files\7z.dll"; DestDir: "{tmp}"; Flags: deleteafterinstall
 Source: ".\Files\skip.txt"; DestDir: "{tmp}"; Flags: deleteafterinstall
 Source: ".\Files\UT\User.ini"; DestDir: "{tmp}"; Flags: deleteafterinstall
 Source: ".\Files\UT\UnrealTournament.ini"; DestDir: "{tmp}"; Flags: deleteafterinstall
 
-;
-Source: "{tmp}\{#UGoldISO}"; DestDir: "{app}\ISO"; Flags: external; Tasks: keepISO
-Source: "{tmp}\{#UTGameISO}"; DestDir: "{app}\ISO"; Flags: external; Tasks: keepISO
-Source: "{tmp}\{#UTGameISOtwo}"; DestDir: "{app}\ISO"; Flags: external; Tasks: keepISO
+; keep downloaded UGold files
+Source: "{tmp}\{code:GetUPatchFile}"; DestDir: "{app}\Downloaded Files"; Flags: external; Tasks: keepFiles; Components: Unreal
+Source: "{tmp}\{#UGoldISO}"; DestDir: "{app}\Downloaded Files"; Flags: external; Tasks: keepFiles; Components: Unreal
+; keep downloaded UT files
+Source: "{tmp}\{code:GetUTPatchFile}"; DestDir: "{app}\Downloaded Files"; Flags: external; Tasks: keepFiles; Components: UnrealTournament
+Source: "{tmp}\{#UTGameISO}"; DestDir: "{app}\Downloaded Files"; Flags: external; Tasks: keepFiles; Components: UnrealTournament
+Source: "{tmp}\{#UTGameISOtwo}"; DestDir: "{app}\Downloaded Files"; Flags: external; Tasks: keepFiles; Components: UnrealTournament
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"
@@ -125,22 +125,21 @@ Name: "{commondesktop}\Unreal Gold Editor"; Filename: "{app}\UnrealGold\System\U
 ;Name: "{commondesktop}\Unreal Editor"; Filename: "{app}\Unreal\System\UnrealEd.exe"; Components: Unreal; Tasks: desktopicon
 
 [Run]
-;Filename: "{app}\System\{#AppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(AppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 ;Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -tiso -o{app}\Unreal -x@skip.txt {#UnrealISO}"; Flags: runhidden; Components: Unreal
 Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -tiso -o{app}\UnrealGold -x@skip.txt {#UGoldISO}"; Flags: runhidden; Components: Unreal
 Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -tiso -o{app}\UnrealTournament -x@skip.txt {#UTGameISO}"; Flags: runhidden; Components: UnrealTournament
 ;Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -tiso -o{app}\UnrealTournament -x@skip.txt {#UTGameISOtwo}"; Flags: runhidden; Components: UnrealTournament
 
 ; extract patch
-Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -o{app}\UnrealGold -x@skip.txt {code:GetFileName|{#DownloadUPatchURL}}"; Flags: runhidden; Components: Unreal
-Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -o{app}\UnrealTournament -x@skip.txt {code:GetFileName|{#DownloadUTPatchURL}}"; Flags: runhidden; Components: UnrealTournament
+Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -o{app}\UnrealGold -x@skip.txt {code:GetUPatchFile}"; Flags: runhidden; Components: Unreal
+Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -o{app}\UnrealTournament -x@skip.txt {code:GetUTPatchFile}"; Flags: runhidden; Components: UnrealTournament
 
 Filename: "{sys}\cmd.exe"; Parameters: "/C ""copy /Y {tmp}\User.ini {app}\UnrealTournament\System"""; Flags: runhidden; Components: UnrealTournament
 Filename: "{sys}\cmd.exe"; Parameters: "/C ""copy /Y {tmp}\UnrealTournament.ini {app}\UnrealTournament\System"""; Flags: runhidden; Components: UnrealTournament
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalTasks}"
-Name: "keepISO"; Description: "{cm:KeepISOs}"; GroupDescription: "{cm:AdditionalTasks}"; Flags: unchecked
+Name: "keepFiles"; Description: "{cm:KeepISOs}"; GroupDescription: "{cm:AdditionalTasks}"; Flags: unchecked
 
 [Messages]
 SetupAppTitle = Setup - {#AppName}
@@ -148,7 +147,7 @@ SetupWindowTitle = Setup - {#AppName}
 
 [CustomMessages]
 CreateDesktopIcon=Create desktop icons
-KeepISOs=Keep downloaded ISO files
+KeepISOs=Keep downloaded files
 AdditionalTasks=Additional tasks
 
 [Components]
@@ -168,3 +167,14 @@ Type: filesandordirs; Name: "{app}"
 
 #include ".\Src\dwinshs.iss"
 #include ".\Src\file_functions.iss"
+
+function InitializeSetup(): Boolean;
+begin
+  UTPatchURL:= GetReleaseFile(ExpandConstant('{#DownloadUTPatchURL}'));
+  UPatchURL:= GetReleaseFile(ExpandConstant('{#DownloadUPatchURL}'));
+  
+  UTPatchFile:= ExtractFilename(UTPatchURL);
+  UPatchFile:= ExtractFilename(UPatchURL);;
+  
+  Result:= True;
+end;
