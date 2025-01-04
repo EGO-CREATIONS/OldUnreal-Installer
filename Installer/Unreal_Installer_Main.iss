@@ -25,7 +25,7 @@
 #define UTGameISO           "UT_GOTY_CD1.iso"
 #define UTGameISOtwo        "UT_GOTY_CD2.iso"
 
-#define DownloadUPatchURL   "https://api.github.com/repos/OldUnreal/Unreal-testing/releases/tags/v227k"
+#define DownloadUPatchURL   "https://api.github.com/repos/OldUnreal/Unreal-testing/releases/tags/v227k_12"
 #define DownloadUnrealURL   "https://archive.org/download/gt-unreal-1998"
 #define DownloadUGoldURL    "https://archive.org/download/totallyunreal"
 #define UnrealISO           "Unreal.iso"
