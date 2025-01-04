@@ -1,5 +1,5 @@
-﻿// =====================================================================================================================
-//    file_functions.iscode
+﻿// ============================================================================
+//    file_functions.iss
 //
 //    Author: Jan Urbansky
 //    E-Mail: mail@ego-creations.de
@@ -11,8 +11,9 @@
 [Code]
 var
   UTPatchFile, UPatchFile, UTPatchURL, UPatchURL: String;
+  UVersion, UTVersion, PatchVersion: String;
 
-// returns Json value from key
+// returns a Json value
 function GetJsonValue(Output: TJsonParserOutput; Parent: TJsonObject; Key: TJsonString; var Value: TJsonValue): Boolean;
 var
   x: Integer;
@@ -30,7 +31,7 @@ begin
   Result := False;
 end;
 
-// returns Json array from key
+// returns a Json array
 function GetJsonArray(Output: TJsonParserOutput; Parent: TJsonObject; Key: TJsonString; var Arr: TJsonArray): Boolean;
 var
   JsonValue: TJsonValue;
@@ -51,7 +52,7 @@ begin
   Result := SameText(SubStr, EndStr); // SameStr() for case-sensitive comparison
 end;
 
-function GetReleaseFile(GitReleasesURL: String): String;
+function GetReleaseFile(URL: String): String;
 var
   HttpReq: Variant;
   JsonValue: TJsonValue;
@@ -59,8 +60,9 @@ var
   JsonParser: TJsonParser;
   x: Integer;
 begin
+  // create a http request object
   HttpReq := CreateOleObject('WinHttp.WinHttpRequest.5.1');
-  HttpReq.Open('GET', GitReleasesURL, False);
+  HttpReq.Open('GET', URL, False);
   HttpReq.SetRequestHeader('Accept','application/json');
   HttpReq.Send('');
 
@@ -68,8 +70,14 @@ begin
   begin
     ParseJson(JsonParser, HttpReq.ResponseText);
 
+    // get git's json array 'assets'
     if GetJsonArray(JsonParser.Output, JsonParser.Output.Objects[0], 'assets', jsonArray) then
     begin
+      // get tag name
+      GetJsonValue(JsonParser.Output, JsonParser.Output.Objects[0], 'tag_name', JsonValue);
+      PatchVersion := JsonParser.Output.Strings[JsonValue.Index];
+
+      // find in assets the Windows patch
       for x:= 0 to GetArrayLength(jsonArray)-1 do
       begin
         if GetJsonValue(JsonParser.Output, JsonParser.Output.Objects[jsonArray[x].Index], 'browser_download_url', JsonValue) and
@@ -86,24 +94,53 @@ begin
   end;
 end;
 
-// UT
-function GetUTPatchFile(Param: String):String;
+// returns the patch filename
+function GetPatch(Param: String) : String;
 begin
-  Result:= UTPatchFile;
+  if Param = 'Unreal' then
+    Result:= UPatchFile
+  else
+    Result:= UTPatchFile;
 end;
 
-function GetUTPatchURL(Param: String):String;
+// returns the patch URL
+function GetPatchURL(Param: String) : String;
 begin
-  Result:= UTPatchURL;
+  if Param = 'Unreal' then
+    Result:= UPatchURL
+  else
+    Result:= UTPatchURL;
 end;
 
-// Unreal
-function GetUPatchFile(Param: String):String;
+// returns the version
+function GetVersion(Param: String) : String;
 begin
-  Result:= UPatchFile;
+  if Param = 'Unreal' then
+    Result:= UVersion
+  else
+    Result:= UTVersion;
 end;
 
-function GetUPatchURL(Param: String):String;
+procedure DecompressMaps();
+var
+  errCode: Integer;
+  FindRec: TFindRec;
+  Path: String;
 begin
-  Result:= UPatchURL;
+  Path:= ExpandConstant('{app}') + '\UnrealTournament';
+
+  if FindFirst(Path + '\Maps\*.uz', FindRec) then begin
+    try
+      repeat
+        if FindRec.Attributes and FILE_ATTRIBUTE_DIRECTORY = 0 then
+        begin
+          ShellExec('', Path + '\System\ucc.exe', 'decompress ' + Path + '\Maps\' + FindRec.Name, '', SW_HIDE, ewWaitUntilTerminated, errCode);
+        end;
+      until not FindNext(FindRec);
+      ShellExec('', ExpandConstant('{sys}') + '\cmd.exe', '/C "move /Y ' + Path + '\System\*.unr ' + Path + '\Maps', '', SW_HIDE, ewWaitUntilTerminated, errCode);
+      ShellExec('', ExpandConstant('{sys}') + '\cmd.exe', '/C "del /F /Q ' + Path + '\Maps\*.uz', '', SW_HIDE, ewWaitUntilTerminated, errCode);
+    finally
+      FindClose(FindRec);
+    end;
+  end;
 end;
