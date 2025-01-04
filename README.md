@@ -18,4 +18,11 @@ Features:
 - keep downloaded files during install procedure
 
 
-Jan "eGo" Urbansky - Copyright (c) 2024, EGO-CREATIONS
+Usage of:
+
+- dwinshs (download engine for Inno Setup) @ https://www.han-soft.com/dwinshs.php
+- JsonParser @ https://github.com/koldev/JsonParser
+- 7zip library @ https://www.7-zip.org
+
+---
+Jan "eGo" Urbansky<br>Copyright (c) 2024, EGO-CREATIONS
