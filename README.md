@@ -18,5 +18,4 @@ Features:
 - keep downloaded files during install procedure
 
 
-Jan "eGo" Urbansky
-Copyright (c) 2024, EGO-CREATIONS
+Jan "eGo" Urbansky - Copyright (c) 2024, EGO-CREATIONS
