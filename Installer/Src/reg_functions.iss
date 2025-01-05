@@ -54,25 +54,25 @@ Root: "HKCR"; Subkey: ".umod"; ValueType: string; ValueData: "Unreal.Module"; Fl
 
 Root: "HKCR"; Subkey: "unreal"; ValueType: string; ValueName: "URL Protocol"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 Root: "HKCR"; Subkey: "unreal"; ValueType: string; ValueData: "URL:Unreal Protocol"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
-Root: "HKCR"; Subkey: "unreal\DefaultIcon"; ValueType: string; ValueData: "{app}\UnrealTournament\Help\UnrealTournament.ico"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
+Root: "HKCR"; Subkey: "unreal\DefaultIcon"; ValueType: string; ValueData: "{app}\UnrealTournament\Help\Unreal.ico"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 Root: "HKCR"; Subkey: "unreal\Shell"; ValueType: string; ValueData: "open"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 Root: "HKCR"; Subkey: "unreal\Shell\open"; ValueType: string; ValueData: "&Play this Unreal level"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 Root: "HKCR"; Subkey: "unreal\Shell\open\command"; ValueType: string; ValueData: "{app}\UnrealTournament\System\UnrealTournament.exe ""%1"""; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 
 Root: "HKCR"; Subkey: "Unreal.Link"; ValueType: string; ValueData: "Unreal Link"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
-Root: "HKCR"; Subkey: "Unreal.Link\DefaultIcon"; ValueType: string; ValueData: "{app}\UnrealTournament\Help\UnrealTournament.ico"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
+Root: "HKCR"; Subkey: "Unreal.Link\DefaultIcon"; ValueType: string; ValueData: "{app}\UnrealTournament\Help\Unreal.ico"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 Root: "HKCR"; Subkey: "Unreal.Link\Shell"; ValueType: string; ValueData: "open"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 Root: "HKCR"; Subkey: "Unreal.Link\Shell\open"; ValueType: string; ValueData: "&Play this Unreal level"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 Root: "HKCR"; Subkey: "Unreal.Link\Shell\open\command"; ValueType: string; ValueData: "{app}\UnrealTournament\System\UnrealTournament.exe ""%1"""; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 
 Root: "HKCR"; Subkey: "Unreal.Map"; ValueType: string; ValueData: "Unreal Map"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
-Root: "HKCR"; Subkey: "Unreal.Map\DefaultIcon"; ValueType: string; ValueData: "{app}\UnrealTournament\Help\UnrealTournament.ico"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
+Root: "HKCR"; Subkey: "Unreal.Map\DefaultIcon"; ValueType: string; ValueData: "{app}\UnrealTournament\Help\Unreal.ico"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 Root: "HKCR"; Subkey: "Unreal.Map\Shell"; ValueType: string; ValueData: "open"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 Root: "HKCR"; Subkey: "Unreal.Map\Shell\open"; ValueType: string; ValueData: "&Play this Unreal level"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 Root: "HKCR"; Subkey: "Unreal.Map\Shell\open\command"; ValueType: string; ValueData: "{app}\UnrealTournament\System\UnrealTournament.exe ""%1"""; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: MAPS\MapsUT
 
 Root: "HKCR"; Subkey: "Unreal.Module"; ValueType: string; ValueData: "Unreal Module"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: UMOD\UModUT
-Root: "HKCR"; Subkey: "Unreal.Module\DefaultIcon"; ValueType: string; ValueData: "{app}\UnrealTournament\Help\UnrealTournament.ico"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: UMOD\UModUT
+Root: "HKCR"; Subkey: "Unreal.Module\DefaultIcon"; ValueType: string; ValueData: "{app}\UnrealTournament\Help\Unreal.ico"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: UMOD\UModUT
 Root: "HKCR"; Subkey: "Unreal.Module\Shell"; ValueType: string; ValueData: "open"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: UMOD\UModUT
 Root: "HKCR"; Subkey: "Unreal.Module\Shell\open"; ValueType: string; ValueData: "&Install this Unreal Module"; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: UMOD\UModUT
 Root: "HKCR"; Subkey: "Unreal.Module\Shell\open\command"; ValueType: string; ValueData: "{app}\UnrealTournament\System\Setup.exe install ""%1"""; Flags: uninsdeletekey; Components: UnrealTournament; Tasks: UMOD\UModUT

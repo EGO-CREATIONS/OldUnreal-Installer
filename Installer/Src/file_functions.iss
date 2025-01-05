@@ -12,6 +12,7 @@
 var
   UTPatchFile, UPatchFile, UTPatchURL, UPatchURL: String;
   UVersion, UTVersion, PatchVersion: String;
+  USDKFile, UTSDKFile, USDKURL, UTSDKURL, SDKURL: String;
 
 // returns a Json value
 function GetJsonValue(Output: TJsonParserOutput; Parent: TJsonObject; Key: TJsonString; var Value: TJsonValue): Boolean;
@@ -81,6 +82,10 @@ begin
       for x:= 0 to GetArrayLength(jsonArray)-1 do
       begin
         if GetJsonValue(JsonParser.Output, JsonParser.Output.Objects[jsonArray[x].Index], 'browser_download_url', JsonValue) and
+        (JsonValue.Kind = JVKString) and (StrEndsWith(JsonParser.Output.Strings[JsonValue.Index], 'SDK.zip')) then
+          SDKURL:= JsonParser.Output.Strings[JsonValue.Index];
+
+        if GetJsonValue(JsonParser.Output, JsonParser.Output.Objects[jsonArray[x].Index], 'browser_download_url', JsonValue) and
         (JsonValue.Kind = JVKString) and (StrEndsWith(JsonParser.Output.Strings[JsonValue.Index], 'Windows.zip')) then
         begin
           //Log(Format('[browser_download_url]: %s', [JsonParser.Output.Strings[JsonValue.Index]]));
@@ -112,6 +117,22 @@ begin
     Result:= UTPatchURL;
 end;
 
+function GetSDK(Param: String) : String;
+begin
+  if Param = 'Unreal' then
+    Result:= USdkFile
+  else
+    Result:= UTSdkFile;
+end;
+
+function GetSdkURL(Param: String) : String;
+begin
+  if Param = 'Unreal' then
+    Result:= USdkURL
+  else
+    Result:= UTSdkURL;
+end;
+
 // returns the version
 function GetVersion(Param: String) : String;
 begin
@@ -121,6 +142,7 @@ begin
     Result:= UTVersion;
 end;
 
+// decompress UT's UZ files
 procedure DecompressMaps();
 var
   errCode: Integer;
@@ -143,4 +165,10 @@ begin
       FindClose(FindRec);
     end;
   end;
+end;
+
+// add SDK sources folder to Unreal's INI
+procedure AddINIUnrealSDK;
+begin
+  SetIniString('Editor.EditorEngine', 'CodePath', '..\Src\', ExpandConstant('{app}' + '\UnrealGold\System\Unreal.ini'));
 end;

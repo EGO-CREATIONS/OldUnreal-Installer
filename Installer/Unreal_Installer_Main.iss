@@ -1,4 +1,4 @@
-;  ============================================================================
+; =============================================================================
 ; Inno Setup script for legacy games installation
 ;
 ;   * Unreal Gold
@@ -31,6 +31,9 @@
 #define UnrealISO           "Unreal.iso"
 #define UGoldISO            "UNREAL_GOLD.ISO"
 
+#define UTMiscURL           "https://files.ego-creations.de/ut"
+#define UTBP4               "UTBonusPack4.zip"
+
 [Setup]
 AppId={#AppId}
 AppName={#AppName}
@@ -55,7 +58,7 @@ ShowTasksTreeLines=True
 ShowComponentSizes=False
 UnInstallDisplayName={#AppName}
 UninstallDisplayIcon={uninstallexe}
-VersionInfoVersion=1.0
+VersionInfoVersion=1.0.0.7
 VersionInfoCompany=EGO-CREATIONS
 VersionInfoDescription=Unreal games installer with OldUnreal community patches
 VersionInfoCopyright=Copyright (c) 2024, EGO-CREATIONS
@@ -69,6 +72,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Files]
 ; -= Unreal Tournament =-
 Source: "{tmp}\{code:GetPatch}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: UnrealTournament; Check: DwinsHs_Check(ExpandConstant('{tmp}\{code:GetPatch}'), ExpandConstant('{code:GetPatchURL}'), '{#AppId}', 'get', 0, 0)
+Source: "{tmp}\{code:GetSDK}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: UnrealTournament; Tasks: sdkFile; Check: DwinsHs_Check(ExpandConstant('{tmp}\{code:GetSDK}'), ExpandConstant('{code:GetSdkURL}'), '{#AppId}', 'get', 0, 0)
+Source: "{tmp}\{#UTBP4}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: UnrealTournament; Check: DwinsHs_Check(ExpandConstant('{tmp}\{#UTBP4}'), '{#UTMiscURL}/{#UTBP4}', '{#AppId}', 'get', 0, 0)
 Source: "{tmp}\{#UTGameISO}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: UnrealTournament; Check: DwinsHs_Check(ExpandConstant('{tmp}\{#UTGameISO}'), '{#DownloadUTGameURL}/{#UTGameISO}', '{#AppId}', 'get', 0, 0)
 Source: "{tmp}\{#UTGameISOtwo}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: UnrealTournament; Check: DwinsHs_Check(ExpandConstant('{tmp}\{#UTGameISOtwo}'), '{#DownloadUTGameURL}/{#UTGameISOtwo}', '{#AppId}', 'get', 0, 0)
 
@@ -78,6 +83,7 @@ Source: "{tmp}\{#UTGameISOtwo}"; DestDir: "{tmp}"; Flags: external deleteafterin
 
 ; -= Unreal Gold =-
 Source: "{tmp}\{code:GetPatch|Unreal}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: Unreal; Check: DwinsHs_Check(ExpandConstant('{tmp}\{code:GetPatch|Unreal}'), ExpandConstant('{code:GetPatchURL|Unreal}'), '{#AppId}', 'get', 0, 0)
+Source: "{tmp}\{code:GetSDK|Unreal}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: Unreal; Tasks: sdkFile; Check: DwinsHs_Check(ExpandConstant('{tmp}\{code:GetSDK|Unreal}'), ExpandConstant('{code:GetSdkURL|Unreal}'), '{#AppId}', 'get', 0, 0)
 Source: "{tmp}\{#UGoldISO}"; DestDir: "{tmp}"; Flags: external deleteafterinstall; Components: Unreal; Check: DwinsHs_Check(ExpandConstant('{tmp}\{#UGoldISO}'), '{#DownloadUGoldURL}/{#UGoldISO}', '{#AppId}', 'get', 0, 0)
 
 ; additional temporary used files
@@ -88,12 +94,16 @@ Source: ".\Files\UT\User.ini"; DestDir: "{tmp}"; Flags: deleteafterinstall
 Source: ".\Files\UT\UnrealTournament.ini"; DestDir: "{tmp}"; Flags: deleteafterinstall
 
 ; keep downloaded UGold files
-Source: "{tmp}\{code:GetPatch|Unreal}"; DestDir: "{app}\Downloaded Files"; Flags: external; Tasks: keepFiles; Components: Unreal
-Source: "{tmp}\{#UGoldISO}"; DestDir: "{app}\Downloaded Files"; Flags: external; Tasks: keepFiles; Components: Unreal
+Source: "{tmp}\{code:GetPatch|Unreal}"; DestDir: "{app}\Downloaded Files"; Flags: external; Components: Unreal; Tasks: keepFiles
+Source: "{tmp}\{code:GetSDK|Unreal}"; DestDir: "{app}\Downloaded Files"; Flags: external skipifsourcedoesntexist; Components: Unreal; Tasks: keepFiles
+Source: "{tmp}\{#UGoldISO}"; DestDir: "{app}\Downloaded Files"; Flags: external; Components: Unreal; Tasks: keepFiles
+
 ; keep downloaded UT files
-Source: "{tmp}\{code:GetPatch}"; DestDir: "{app}\Downloaded Files"; Flags: external; Tasks: keepFiles; Components: UnrealTournament
-Source: "{tmp}\{#UTGameISO}"; DestDir: "{app}\Downloaded Files"; Flags: external; Tasks: keepFiles; Components: UnrealTournament
-Source: "{tmp}\{#UTGameISOtwo}"; DestDir: "{app}\Downloaded Files"; Flags: external; Tasks: keepFiles; Components: UnrealTournament
+Source: "{tmp}\{code:GetPatch}"; DestDir: "{app}\Downloaded Files"; Flags: external; Components: UnrealTournament; Tasks: keepFiles
+Source: "{tmp}\{code:GetSDK}"; DestDir: "{app}\Downloaded Files"; Flags: external skipifsourcedoesntexist; Components: UnrealTournament; Tasks: keepFiles
+Source: "{tmp}\{#UTBP4}"; DestDir: "{app}\Downloaded Files"; Flags: external; Components: UnrealTournament; Tasks: keepFiles
+Source: "{tmp}\{#UTGameISO}"; DestDir: "{app}\Downloaded Files"; Flags: external; Components: UnrealTournament; Tasks: keepFiles
+Source: "{tmp}\{#UTGameISOtwo}"; DestDir: "{app}\Downloaded Files"; Flags: external; Components: UnrealTournament; Tasks: keepFiles
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"
@@ -124,20 +134,29 @@ Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -tiso -o{app}\UnrealTournament 
 ;Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -tiso -o{app}\UnrealTournament -x@skip.txt {#UTGameISOtwo}"; Flags: runhidden; Components: UnrealTournament
 
 ; extract patch
-Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -o{app}\UnrealGold -x@skip.txt {code:GetPatch|Unreal}"; Flags: runhidden; Components: Unreal
-Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -o{app}\UnrealTournament -x@skip.txt {code:GetPatch}"; Flags: runhidden; Components: UnrealTournament
+Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -o{app}\UnrealGold {code:GetPatch|Unreal}"; Flags: runhidden; Components: Unreal
+Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -o{app}\UnrealTournament {code:GetPatch}"; Flags: runhidden; Components: UnrealTournament
 
+; extract UTBP4
+Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -o{app}\UnrealTournament {#UTBP4}"; Flags: runhidden; Components: UnrealTournament
+
+; copy UT config files
 Filename: "{sys}\cmd.exe"; Parameters: "/C ""copy /Y {tmp}\User.ini {app}\UnrealTournament\System"""; Flags: runhidden; Components: UnrealTournament
 Filename: "{sys}\cmd.exe"; Parameters: "/C ""copy /Y {tmp}\UnrealTournament.ini {app}\UnrealTournament\System"""; Flags: runhidden; Components: UnrealTournament
 
+; extract SDK
+Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -o{app}\UnrealGold\Src {code:GetSDK|Unreal}"; Flags: runhidden; Components: Unreal; Tasks: sdkFile; AfterInstall: AddINIUnrealSDK
+Filename: "{tmp}\7z.exe"; Parameters: "x -aoa -y -o{app}\UnrealTournament\Src {code:GetSDK}"; Flags: runhidden; Components: UnrealTournament; Tasks: sdkFile
+
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalTasks}"
+Name: "sdkFile"; Description: "{cm:LoadSDK}"; GroupDescription: "{cm:AdditionalTasks}"; Flags: unchecked
 Name: "keepFiles"; Description: "{cm:KeepISOs}"; GroupDescription: "{cm:AdditionalTasks}"; Flags: unchecked
 Name: "MAPS"; Description: "{cm:OpenMaps}"; Flags: unchecked dontinheritcheck
-Name: "MAPS\MapsU"; Description: "{cm:GameUnreal}"; Flags: unchecked exclusive; Components: Unreal
+Name: "MAPS\MapsU"; Description: "{cm:GameUnreal}"; Flags: exclusive; Components: Unreal
 Name: "MAPS\MapsUT"; Description: "{cm:GameUT}"; Flags: exclusive; Components: UnrealTournament
 Name: "UMOD"; Description: "{cm:UModTasks}"; GroupDescription: " "; Flags: unchecked dontinheritcheck
-Name: "UMOD\UModU"; Description: "{cm:GameUnreal}"; Flags: unchecked exclusive; Components: Unreal
+Name: "UMOD\UModU"; Description: "{cm:GameUnreal}"; Flags: exclusive; Components: Unreal
 Name: "UMOD\UModUT"; Description: "{cm:GameUT}"; Flags: exclusive; Components: UnrealTournament
 
 [Messages]
@@ -152,7 +171,8 @@ GameUnreal=Unreal
 GameUT=Unreal Tournament
 CreateDesktopIcon=Create desktop icons
 KeepISOs=Keep downloaded files
-AdditionalTasks=Additional tasks
+LoadSDK=Install SDK (will be installed in [Game]\Src)
+AdditionalTasks=Additional tasks:
 UModTasks=Register UMod functionality with:
 OpenMaps=Register maps open with:
 
@@ -181,12 +201,17 @@ function InitializeSetup(): Boolean;
 begin
   UPatchURL:= GetReleaseFile(ExpandConstant('{#DownloadUPatchURL}'));
   UVersion:= PatchVersion;
+  USdkURL:= SdkURL;
 
   UTPatchURL:= GetReleaseFile(ExpandConstant('{#DownloadUTPatchURL}'));
   UTVersion:= PatchVersion;
+  UTSdkURL:= SdkURL;
   
   UTPatchFile:= ExtractFilename(UTPatchURL);
-  UPatchFile:= ExtractFilename(UPatchURL);;
+  UPatchFile:= ExtractFilename(UPatchURL);
+
+  USdkFile:= ExtractFilename(USdkURL);
+  UTSdkFile:= ExtractFilename(UTSdkURL);
   
   Result:= True;
 end;
